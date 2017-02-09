@@ -128,14 +128,13 @@ var Base = function () {
 
     this.type = type;
     this.color = BASE_COLORS[this.type];
-
     this.isPair = this.isPair.bind(this);
   }
 
   _createClass(Base, [{
     key: 'drawBase',
-    value: function drawBase(dna, x, y) {
-      dna.beginStroke(this.color).beginFill(this.color).drawCircle(x, y, 5);
+    value: function drawBase(graphics, x, y) {
+      graphics.beginStroke(this.color).beginFill(this.color).drawCircle(x, y, 5);
     }
   }, {
     key: 'isPair',
@@ -193,10 +192,20 @@ var DNA = function () {
     this.stage = stage;
     this.container = container;
     this.update = false;
+    this.dnaCanvas = null;
+    this.strandCanvas = null;
+    this.gapX = 0;
+    this.gapY = 0;
+    this.strandX = 0;
+    this.strandY = 0;
+    this.dnaX = 0;
+    this.dnaY = 0;
+    this.compStrandInput = [];
+    this.drawAllLinesInput = [];
 
-    this.drawDNA = this.drawDNA.bind(this);
+    this.drawDNAsAndStrands = this.drawDNAsAndStrands.bind(this);
     this.randomCut = this.randomCut.bind(this);
-    this.drawDNA();
+    this.drawDNAsAndStrands();
   }
 
   _createClass(DNA, [{
@@ -207,72 +216,106 @@ var DNA = function () {
       return [Math.min(idx1, idx2), Math.max(idx1, idx2)];
     }
   }, {
-    key: 'drawDNA',
-    value: function drawDNA() {
+    key: 'drawDNAsAndStrands',
+    value: function drawDNAsAndStrands() {
       var dna = new createjs.Shape();
       var strand = new createjs.Shape();
       var hitDna = new createjs.Shape();
       var hitStrand = new createjs.Shape();
 
-      var xPos = 100 + Math.floor(Math.random() * 1000);
-      var xPosStrand = 100 + Math.floor(Math.random() * 1000);
+      var xPos = 100 + Math.floor(Math.random() * 50) * 10;
+      var xPosStrand = 500 + Math.floor(Math.random() * 50) * 10;
 
       var _randomCut = this.randomCut(),
           _randomCut2 = _slicedToArray(_randomCut, 2),
           stIdx = _randomCut2[0],
-          enIdx = _randomCut2[1];
+          endIdx = _randomCut2[1];
 
       var f = 1;
       var outerBase = true;
-
+      var gapX = 0;
+      var gapY = 0;
+      var strandX = 0;
+      var strandY = 0;
+      var dnaX = 0;
+      var dnaY = 0;
       for (var i = 0; i < this.sequence.length; i++) {
         outerBase = i % 8 === 0 ? true : false;
         f *= i % 4 === 0 ? -1 : 1;
         var a = i % 4 * f < 0 ? 4 + i % 4 * f : i % 4 * f;
         a = outerBase ? 40 : a * 10;
-        if (i >= stIdx && i <= enIdx) {
+        if (i > stIdx && i <= endIdx) {
           dna.graphics.beginStroke("#b2b2ff").mt(xPos - a - 10 - f * 10, 60 + 20 * (i + 1)).lt(xPos - a - 10, 60 + 20 * i);
+          // this.basesF.push(this.fstrand[i]);
           this.fstrand[i].drawBase(dna.graphics, xPos - a - 10, 60 + 20 * i);
           strand.graphics.beginStroke("#b2b2ff").mt(xPosStrand + a, 60 + 20 * i).lt(xPosStrand + a + f * 10, 60 + 20 * (i + 1));
+          this.compStrandInput.push([this.rstrand[i], dna.graphics, xPos + a + 10, 60 + 20 * i]);
+
+          this.drawAllLinesInput.push([dna.graphics, xPos - a - 10 - f * 10, 60 + 20 * (i + 1), xPos - a - 10, 60 + 20 * i]);
+          this.drawAllLinesInput.push([dna.graphics, xPos + a + 10, 60 + 20 * i, xPos + a + 10 + f * 10, 60 + 20 * (i + 1)]);
+          this.drawAllLinesInput.push([dna.graphics, xPos - a - 10, 60 + 20 * i, xPos + a + 10, 60 + 20 * i]);
+
           this.rstrand[i].drawBase(strand.graphics, xPosStrand + a, 60 + 20 * i);
+          gapX += xPos + a + 10;
+          gapY += 60 + 20 * i;
+          strandX += xPosStrand + a;
+          strandY += 60 + 20 * i;
+          dnaX += (xPos - a - 10 + (xPos + a + 10)) / 2;
+          dnaY += 60 + 20 * i;
         } else {
           dna.graphics.beginStroke("#b2b2ff").mt(xPos - a - 10 - f * 10, 60 + 20 * (i + 1)).lt(xPos - a - 10, 60 + 20 * i);
           dna.graphics.beginStroke("#b2b2ff").mt(xPos + a + 10, 60 + 20 * i).lt(xPos + a + 10 + f * 10, 60 + 20 * (i + 1));
           dna.graphics.beginStroke("#b2b2ff").mt(xPos - a - 10, 60 + 20 * i).lt(xPos + a + 10, 60 + 20 * i);
           this.fstrand[i].drawBase(dna.graphics, xPos - a - 10, 60 + 20 * i);
           this.rstrand[i].drawBase(dna.graphics, xPos + a + 10, 60 + 20 * i);
+          dnaX += (xPos - a - 10 + (xPos - a - 10)) / 2;
+          dnaY += 60 + 20 * i;
         }
       }
-      console.log('done');
-
+      this.dnaX = dnaX / this.sequence.length;
+      this.dnaY = dnaY / this.sequence.length;
+      this.gapX = gapX / (endIdx - stIdx);
+      this.gapY = gapY / (endIdx - stIdx);
+      this.strandX = strandX / (endIdx - stIdx);
+      this.strandY = strandY / (endIdx - stIdx);
       hitDna.graphics.beginFill("#000").drawRect(xPos - 30, 50, 60, 20 * this.sequence.length - 1);
       dna.hitArea = hitDna;
       this.container.addChild(dna);
+      this.dnaCanvas = dna;
 
-      hitStrand.graphics.beginFill("#000").drawRect(xPosStrand, 50 + stIdx * 20, 60, 20 * (enIdx - stIdx + 1));
+      hitStrand.graphics.beginFill("#000").drawRect(xPosStrand, 50 + stIdx * 20, 60, 20 * (endIdx - stIdx + 1));
       strand.hitArea = hitStrand;
       this.container.addChild(strand);
+      this.strandCanvas = strand;
+      this.stage.update();
+    }
+  }, {
+    key: 'isPair',
+    value: function isPair(strand) {
+      return this.strandCanvas === strand;
+    }
+  }, {
+    key: 'pair',
+    value: function pair(dna, strand) {
+      for (var i = 0; i < this.compStrandInput.length; i++) {
+        var _compStrandInput$i = _slicedToArray(this.compStrandInput[i], 4),
+            base = _compStrandInput$i[0],
+            graphics = _compStrandInput$i[1],
+            x = _compStrandInput$i[2],
+            y = _compStrandInput$i[3];
 
-      var that = this;
-      dna.addEventListener("mousedown", function (evt) {
-        that.localX = evt.localX;
-        that.localY = evt.localY;
-      });
-      strand.addEventListener("mousedown", function (evt) {
-        that.localX = evt.localX;
-        that.localY = evt.localY;
-      });
+        base.drawBase(graphics, x, y);
+      }
+      for (var i = 0; i < this.drawAllLinesInput.length; i++) {
+        var _drawAllLinesInput$i = _slicedToArray(this.drawAllLinesInput[i], 5),
+            graphics = _drawAllLinesInput$i[0],
+            x1 = _drawAllLinesInput$i[1],
+            y1 = _drawAllLinesInput$i[2],
+            x2 = _drawAllLinesInput$i[3],
+            y2 = _drawAllLinesInput$i[4];
 
-      dna.on("pressmove", function (evt) {
-        dna.x = evt.stageX - that.localX;
-        dna.y = evt.stageY - that.localY;
-        that.stage.update();
-      });
-      strand.on("pressmove", function (evt) {
-        strand.x = evt.stageX - that.localX;
-        strand.y = evt.stageY - that.localY;
-        that.stage.update();
-      });
+        graphics.beginStroke("#b2b2ff").mt(x1, y1).lt(x2, y2);
+      }
       this.stage.update();
     }
   }]);
@@ -323,13 +366,91 @@ var Game = function () {
     value: function createDNAs() {
       var count = 3 + Math.floor(Math.random() * 4);
       var that = this;
-      for (var k = 0; k < count; k++) {
+
+      var _loop = function _loop(k) {
         var length = 10 + Math.floor(Math.random() * 10);
         var sequence = [];
         for (var i = 0; i < length; i++) {
           sequence.push(BASES[Math.floor(Math.random() * 4)]);
         }
-        new _dna2.default(sequence, that.stage, that.container);
+        var dna = new _dna2.default(sequence, that.stage, that.container);
+        var gapX = dna.gapX;
+        var gapY = dna.gapY;
+        var dnaX = dna.dnaX;
+        var dnaY = dna.dnaY;
+        var strandX = dna.strandX;
+        var strandY = dna.strandY;
+        var paired = false;
+        // debugger;
+
+        dna.dnaCanvas.addEventListener("mousedown", function (evt) {
+          dna.dnaCanvas.localX = evt.localX;
+          dna.dnaCanvas.localY = evt.localY;
+          if (paired) {
+
+            dna.strandCanvas.localX = evt.localX;
+            dna.strandCanvas.localY = evt.localY;
+          }
+        });
+        dna.strandCanvas.addEventListener("mousedown", function (evt) {
+          if (!paired) {
+            dna.strandCanvas.localX = evt.localX;
+            dna.strandCanvas.localY = evt.localY;
+          }
+        });
+        dna.strandCanvas.addEventListener("pressup", function (evt) {
+          dna.strandCanvas.localX = evt.localX;
+          dna.strandCanvas.localY = evt.localY;
+          var distance = (dna.strandX - dna.gapX) * (dna.strandX - dna.gapX) + (dna.strandY - dna.gapY) * (dna.strandY - dna.gapY);
+          if (distance < 100) {
+            console.log('on the DNA');
+            paired = true;
+            dna.pair(dna.dnaCanvas, dna.strandCanvas);
+            that.container.removeChild(dna.strandCanvas);
+            that.stage.update();
+            // for (let i = 0; i < length; i++) {
+            //   sequence.push(BASES[Math.floor(Math.random() * 4)]);
+            // }
+          }
+        });
+        dna.dnaCanvas.on("pressmove", function (evt) {
+          dna.dnaCanvas.x = evt.stageX - dna.dnaCanvas.localX;
+          dna.dnaCanvas.y = evt.stageY - dna.dnaCanvas.localY;
+          dna.gapX = gapX + dna.dnaCanvas.x;
+          dna.gapY = gapY + dna.dnaCanvas.y;
+          dna.dnaX = dnaX + dna.dnaCanvas.x;
+          dna.dnaY = dnaY + dna.dnaCanvas.y;
+          // dna.dnaCanvas.graphics.beginStroke('#ff7f41').beginFill('#ff7f41').drawCircle(dna.gapX, dna.gapY, 5)
+          // dna.dnaCanvas.graphics.beginStroke('#4162ff').beginFill('#4162ff').drawCircle(dna.dnaX, dna.dnaY, 5)
+          if (paired) {
+            dna.strandCanvas.x = dna.dnaCanvas.x;
+            dna.strandCanvas.y = dna.dnaCanvas.x;
+            dna.strandX = strandX + dna.strandCanvas.x;
+            dna.strandY = strandY + dna.strandCanvas.y;
+          }
+
+          that.stage.update();
+        });
+        dna.strandCanvas.on("pressmove", function (evt) {
+          if (!paired) {
+            dna.strandCanvas.x = evt.stageX - dna.strandCanvas.localX;
+            dna.strandCanvas.y = evt.stageY - dna.strandCanvas.localY;
+            dna.strandX = strandX + dna.strandCanvas.x;
+            dna.strandY = strandY + dna.strandCanvas.y;
+            // dna.strandCanvas.graphics.beginStroke('#4162ff').beginFill('#4162ff').drawCircle(dna.strandX, dna.strandY, 5)
+            // Game logic here
+            var distance = (dna.strandX - dna.gapX) * (dna.strandX - dna.gapX) + (dna.strandY - dna.gapY) * (dna.strandY - dna.gapY);
+            if (distance < 100) {
+              console.log('close to the DNA');
+            }
+          }
+          that.stage.update();
+        });
+        that.stage.update();
+      };
+
+      for (var k = 0; k < count; k++) {
+        _loop(k);
       }
     }
   }]);
