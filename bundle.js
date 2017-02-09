@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,11 +73,29 @@
 "use strict";
 
 
+var _puzzle_view = __webpack_require__(1);
+
+var _puzzle_view2 = _interopRequireDefault(_puzzle_view);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+$(function () {
+  var root = $('.dna-puzzle');
+  var view = new _puzzle_view2.default(root);
+});
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _game = __webpack_require__(3);
+var _game = __webpack_require__(4);
 
 var _game2 = _interopRequireDefault(_game);
 
@@ -94,7 +112,7 @@ var PuzzleView = function PuzzleView() {
 exports.default = PuzzleView;
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -150,7 +168,7 @@ var Base = function () {
 exports.default = Base;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -164,7 +182,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _base = __webpack_require__(1);
+var _base = __webpack_require__(2);
 
 var _base2 = _interopRequireDefault(_base);
 
@@ -202,8 +220,8 @@ var DNA = function () {
   _createClass(DNA, [{
     key: 'randomCut',
     value: function randomCut() {
-      var idx1 = Math.floor(Math.random() * (this.sequence.length - 2)) + 2;
-      var idx2 = Math.floor(Math.random() * (this.sequence.length - 2)) + 2;
+      var idx1 = Math.floor(Math.random() * (this.sequence.length - 2));
+      var idx2 = Math.floor(Math.random() * (this.sequence.length - 2));
       return [Math.min(idx1, idx2), Math.max(idx1, idx2)];
     }
   }, {
@@ -221,6 +239,11 @@ var DNA = function () {
           _randomCut2 = _slicedToArray(_randomCut, 2),
           stIdx = _randomCut2[0],
           enIdx = _randomCut2[1];
+      // dna.graphics.beginStroke("#b2b2ff").mt(xPos, 50).lt(xPos, 50 + (this.sequence.length * 20));
+      // dna.graphics.beginStroke("#b2b2ff").mt(xPos + 20, 50).lt(xPos + 20, 50 + ((stIdx*20)));
+      // dna.graphics.beginStroke("#b2b2ff").mt(xPos + 20, 70 + ((enIdx*20))).lt(xPos + 20, 50 + (this.sequence.length * 20));
+
+      // strand.graphics.beginStroke("#b2b2ff").mt(xPosStrand, 50+(stIdx*20)).lt(xPosStrand, 50 + ((enIdx) * 20));
 
       var f = 1;
       var outerBase = true;
@@ -231,12 +254,12 @@ var DNA = function () {
         var a = i % 4 * f < 0 ? 4 + i % 4 * f : i % 4 * f;
         a = outerBase ? 40 : a * 10;
         if (i >= stIdx && i <= enIdx) {
-          dna.graphics.beginStroke("#b2b2ff").mt(xPos - a - 10 - f * 10, 60 + 20 * (i + 1)).lt(xPos - a - 10, 60 + 20 * i);
+          dna.graphics.beginStroke("#b2b2ff").mt(xPos - a - 10, 60 + 20 * i).lt(xPos - a - 10 + f * 10, 60 + 20 * i);
           this.fstrand[i].drawBase(dna.graphics, xPos - a - 10, 60 + 20 * i);
-          strand.graphics.beginStroke("#b2b2ff").mt(xPosStrand + a, 60 + 20 * i).lt(xPosStrand + a + f * 10, 60 + 20 * (i + 1));
+          strand.graphics.beginStroke("#b2b2ff").mt(xPosStrand + a, 60 + 20 * i).lt(xPosStrand + a + f * 10, 60 + 20 * i);
           this.rstrand[i].drawBase(strand.graphics, xPosStrand + a, 60 + 20 * i);
         } else {
-          dna.graphics.beginStroke("#b2b2ff").mt(xPos - a - 10 - f * 10, 60 + 20 * (i + 1)).lt(xPos - a - 10, 60 + 20 * i);
+          dna.graphics.beginStroke("#b2b2ff").mt(xPos - a - 10, 60 + 20 * i).lt(xPos - a - 10 + f * 10, 60 + 20 * (i + 1));
           dna.graphics.beginStroke("#b2b2ff").mt(xPos + a + 10, 60 + 20 * i).lt(xPos + a + 10 + f * 10, 60 + 20 * (i + 1));
           dna.graphics.beginStroke("#b2b2ff").mt(xPos - a - 10, 60 + 20 * i).lt(xPos + a + 10, 60 + 20 * i);
           this.fstrand[i].drawBase(dna.graphics, xPos - a - 10, 60 + 20 * i);
@@ -283,7 +306,7 @@ var DNA = function () {
 exports.default = DNA;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -295,7 +318,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dna = __webpack_require__(2);
+var _dna = __webpack_require__(3);
 
 var _dna2 = _interopRequireDefault(_dna);
 
@@ -338,24 +361,6 @@ var Game = function () {
 }();
 
 exports.default = Game;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _puzzle_view = __webpack_require__(0);
-
-var _puzzle_view2 = _interopRequireDefault(_puzzle_view);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-$(function () {
-  var root = $('.dna-puzzle');
-  var view = new _puzzle_view2.default(root);
-});
 
 /***/ })
 /******/ ]);
