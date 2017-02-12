@@ -11,7 +11,7 @@ Technical details of the project are outlined in the **Functionality & MVP** and
 
 Feel free to browse at [DNAPuzzle][dnapuzzlelive]
 
-<img src='http://res.cloudinary.com/datsbxfvs/image/upload/v1486892787/Screen_Shot_2017-02-12_at_1.45.41_AM_qg3yl3.png' width='30%' height='300px'/>
+<img src='http://res.cloudinary.com/datsbxfvs/image/upload/v1486892787/Screen_Shot_2017-02-12_at_1.45.41_AM_qg3yl3.png' width='100%' height='auto'/>
 
 ### Functionality & MVP  
 
