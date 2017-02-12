@@ -6,11 +6,27 @@
     <script type=" text/javascript" src="https://code.jquery.com/jquery-2.1.1.js"></script>
     <script src="./jcanvas/jcanvas.min.js"></script>
     <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+    <script src="https://use.fontawesome.com/f57d82efb9.js"></script>
     <script src="./assets/bundle.js"></script>
     <link rel='stylesheet' href='style.css'/>
   </head>
   <body>
     <main id='dna-puzzle'>
+      <ul>
+        <div class="flex">
+          <li id="question-circle" ><i class="fa fa-question fa-style" aria-hidden="true"></i></a></li>
+          <div class='text'>Help</div>
+        </div>
+        <div class="flex">
+          <li id="random-circle" ><i class="fa  fa-random fa-style" aria-hidden="true"></i></li>
+          <div class='text'>New Game</div>
+        </div>
+        <div class="flex">
+          <a href='https://github.com/elifsezgin/DNAPuzzle' ><li id="github" ><i class="fa fa-github fa-style" aria-hidden="true"></i></i></li></a>
+          <div class='text' >Github</div>
+        </div>
+
+      </ul>
       <canvas id="canvas" width="1000" height="700"></canvas>
     </main>
   </body>

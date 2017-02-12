@@ -1,7 +1,155 @@
 body {
-  height: 100vh;
+  width:100%;
+  height:100%;
   background-color: #000000;
+  margin:0;
+  padding:0;
 }
 
 canvas {
+  margin:0;
+  padding:0;
+  display:block;
 }
+
+ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 40px 40px 0px 40px;
+  font-size: 40px;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text {
+  display: block;
+  position: relative;
+  margin: 10px;
+  font-size: 20px;
+  color: #e0e0e0;
+  font-family: sans-serif;
+}
+
+.fa-style {
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.fa-style:hover {
+  cursor: pointer;
+  color: #e0e0e0;
+}
+
+.adenine {
+  color: #ff4162;
+}
+
+.guanine {
+  color: #4162ff;
+}
+
+.cytosine {
+  color:  #ff7f41;
+}
+
+.timine {
+  color:  #62ff41;
+}
+
+.empty {
+  color: #000;
+}
+
+.modal-text {
+  color: #e0e0e0;
+  font-family: sans-serif;
+  font-size: 25px;
+  margin: auto;
+}
+
+.bigger {
+  font-size: 50px;
+  margin-left: 20px;
+  margin: auto;
+}
+
+.fa-base {
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.start {
+  padding: 10px;
+  background-color: #515151;
+  border-radius: 8px;
+  margin: auto;
+}
+
+.start:hover {
+  margin: auto;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: #666;
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.5;
+}
+
+#modal {
+  position:absolute;
+  background:rgba(0,0,0,0.2);
+  border-radius:14px;
+  padding:8px;
+}
+
+#content {
+  background:#000;
+  padding:20px;
+}
+
+#close {
+  /*position:absolute;
+  background:url(close.png) 0 0 no-repeat;
+  width:24px;
+  height:27px;
+  display:block;
+  text-indent:-9999px;
+  top:-7px;
+  right:-7px;*/
+}
+
+#question-circle {
+  color: #a1ff8d;
+}
+
+#random-circle {
+  color: #33eee0;
+}
+
+#github {
+  color: #ffffff;
+}
+
+
+/*#canvas {
+  position: fixed;
+  top: 5;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #DABDD8;
+  }*/

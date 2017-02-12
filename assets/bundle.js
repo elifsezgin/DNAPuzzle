@@ -77,6 +77,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _game = __webpack_require__(3);
 
 var _game2 = _interopRequireDefault(_game);
@@ -85,11 +87,142 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PuzzleView = function PuzzleView() {
-  _classCallCheck(this, PuzzleView);
+var PuzzleView = function () {
+  function PuzzleView() {
+    var _this = this;
 
-  this.game = new _game2.default();
-};
+    _classCallCheck(this, PuzzleView);
+
+    this.game = null;
+    this.newGame = this.newGame.bind(this);
+    this.hint = this.hint.bind(this);
+    this.gameFinished = this.gameFinished.bind(this);
+    var $newGame = $("#random-circle");
+    $newGame.on('click', function () {
+      _this.newGame();
+    });
+    $(document).on('click', function () {
+      return _this.gameFinished();
+    });
+    this.hint();
+  }
+
+  _createClass(PuzzleView, [{
+    key: 'newGame',
+    value: function newGame() {
+      this.game = new _game2.default();
+    }
+  }, {
+    key: 'hint',
+    value: function hint() {
+      var _this2 = this;
+
+      var that = this;
+      var content = '<div class="modal-text">Match DNAs with their strands</div></br><div class="modal-text bigger"><i class="fa fa-circle adenine" aria-hidden="true"></i> = <i class="fa fa-circle timine" aria-hidden="true"></i></div></br><div class="modal-text bigger"><i class="fa fa-circle guanine" aria-hidden="true"></i> = <i class="fa fa-circle cytosine" aria-hidden="true"></i></div></br><div id="base" class="modal-text"><i class="fa fa-circle empty" aria-hidden="true"></div></br>';
+      var start = '<div class="modal-text start">Start</div>';
+      this.modal = function () {
+        var method = {};
+        var $overlay = $('<div id="overlay"></div>');
+        var $modal = $('<div id="modal"></div>');
+        var $content = $('<div id="content" class="flex"></div>');
+
+        $modal.hide();
+        $overlay.hide();
+        $modal.append($content);
+
+        method.center = function () {
+          var top = void 0,
+              left = void 0;
+          var height = $modal.outerHeight() === 0 ? 392 : $modal.outerHeight();
+          var width = $modal.outerWidth() === 0 ? 345 : $modal.outerWidth();
+          top = Math.max($(window).height() - height, 0) / 2;
+          left = Math.max($(window).width() - width, 0) / 2;
+          $modal.css({
+            top: top + $(window).scrollTop(),
+            left: left + $(window).scrollLeft()
+          });
+        };
+        method.open = function (settings) {
+          $content.empty().append(settings.content);
+
+          $modal.css({
+            width: settings.width || 'auto',
+            height: settings.height || 'auto'
+          });
+          method.center();
+          $(window).bind('resize.modal', method.center);
+
+          $modal.show();
+          $overlay.show();
+        };
+        method.close = function () {
+          $modal.hide();
+          $overlay.hide();
+          $content.empty();
+          $(window).unbind('resize.modal');
+        };
+        $overlay.click(function (e) {
+          e.preventDefault();
+          method.close();
+        });
+
+        $modal.on('click', '.start', function (e) {
+          e.preventDefault();
+          method.close();
+          that.newGame();
+        });
+        $(document).ready(function () {
+          _this2.modal.open({ content: content + start });
+          $('body').append($overlay, $modal);
+        });
+        var $base = void 0;
+        $modal.on('mouseover', '.adenine', function () {
+          $base = $content.children('#base');
+          $base.text('Adenine');
+        });
+
+        $modal.on('mouseover', '.guanine', function () {
+          $base = $content.children('#base');
+          $base.text('Guanine');
+        });
+        $modal.on('mouseover', '.cytosine', function () {
+          $base = $content.children('#base');
+          $base.text('Cytosine');
+        });
+        $modal.on('mouseover', '.timine', function () {
+          $base = $content.children('#base');
+          $base.text('Timine');
+        });
+
+        return method;
+      }();
+
+      var $hint = $("#question-circle");
+      $hint.on('click', function () {
+        _this2.modal.open({ content: content });
+      });
+    }
+  }, {
+    key: 'gameFinished',
+    value: function gameFinished() {
+      var _this3 = this;
+
+      var that = this;
+      if (this.game && this.game.gameWon) {
+        var content = '<div class="modal-text">You won! Total DNA\'s matched: ' + this.game.count + '</div>';
+        this.modal.open({ content: content });
+        var $overlay = $('#overlay');
+        $overlay.click(function (e) {
+          e.preventDefault();
+          that.modal.close();
+          _this3.game.gameWon = false;
+        });
+      }
+    }
+  }]);
+
+  return PuzzleView;
+}();
 
 exports.default = PuzzleView;
 
@@ -179,18 +312,20 @@ var BASE_PAIRS = {
 };
 
 var DNA = function () {
-  function DNA(sequence, stage, container) {
+  function DNA(sequence, stage, container, xPos, xPosStrand) {
     _classCallCheck(this, DNA);
 
     this.sequence = sequence;
+    this.stage = stage;
+    this.container = container;
+    this.xPos = xPos;
+    this.xPosStrand = xPosStrand;
     this.fstrand = this.sequence.map(function (base) {
       return new _base2.default(base);
     });
     this.rstrand = this.sequence.map(function (base) {
       return new _base2.default(BASE_PAIRS[base]);
     });
-    this.stage = stage;
-    this.container = container;
     this.update = false;
     this.dnaCanvas = null;
     this.strandCanvas = null;
@@ -211,8 +346,12 @@ var DNA = function () {
   _createClass(DNA, [{
     key: 'randomCut',
     value: function randomCut() {
-      var idx1 = Math.floor(Math.random() * (this.sequence.length - 2)) + 2;
-      var idx2 = Math.floor(Math.random() * (this.sequence.length - 2)) + 2;
+      var idx1 = 0;
+      var idx2 = 0;
+      while (idx1 === idx2) {
+        idx1 = Math.floor(Math.random() * (this.sequence.length - 2)) + 2;
+        idx2 = Math.floor(Math.random() * (this.sequence.length - 2)) + 2;
+      }
       return [Math.min(idx1, idx2), Math.max(idx1, idx2)];
     }
   }, {
@@ -223,8 +362,10 @@ var DNA = function () {
       var hitDna = new createjs.Shape();
       var hitStrand = new createjs.Shape();
 
-      var xPos = 100 + Math.floor(Math.random() * 50) * 10;
-      var xPosStrand = 500 + Math.floor(Math.random() * 50) * 10;
+      // let xPos = 100 + Math.floor(Math.random() * 50) * 10
+      // let xPosStrand = 500 + Math.floor(Math.random() * 50) * 10
+      var xPos = this.xPos;
+      var xPosStrand = this.xPosStrand;
 
       var _randomCut = this.randomCut(),
           _randomCut2 = _slicedToArray(_randomCut, 2),
@@ -352,30 +493,45 @@ var Game = function () {
   function Game() {
     _classCallCheck(this, Game);
 
+    this.createDNAs = this.createDNAs.bind(this);
+    this.pairedCount = 0;
+    this.gameWon = false;
+    this.resize = this.resize.bind(this);
     this.stage = new createjs.Stage("canvas");
+    this.resize();
     this.container = new createjs.Container();
     this.stage.addChild(this.container);
     this.stage.enableMouseOver(10);
     this.stage.mouseMoveOutside = true;
-    this.createDNAs = this.createDNAs.bind(this);
+    window.addEventListener('resize', this.resize, false);
     this.createDNAs();
   }
 
   _createClass(Game, [{
+    key: 'resize',
+    value: function resize() {
+      this.stage.canvas.width = window.innerWidth;
+      this.stage.canvas.height = window.innerHeight;
+      this.stage.update();
+    }
+  }, {
     key: 'createDNAs',
     value: function createDNAs() {
       var _this = this;
 
-      var count = 3 + Math.floor(Math.random() * 4);
+      this.count = 3 + Math.floor(Math.random() * 3);
+
       var that = this;
 
       var _loop = function _loop(k) {
+        var xPos = window.innerWidth / 10 + 120 * k;
+        var xPosStrand = window.innerWidth * 3 / 4 + Math.floor(Math.random() * _this.count * 40);
         var length = 10 + Math.floor(Math.random() * 10);
         var sequence = [];
         for (var i = 0; i < length; i++) {
           sequence.push(BASES[Math.floor(Math.random() * 4)]);
         }
-        var dna = new _dna2.default(sequence, that.stage, that.container);
+        var dna = new _dna2.default(sequence, that.stage, that.container, xPos, xPosStrand);
         var gapX = dna.gapX;
         var gapY = dna.gapY;
         var dnaX = dna.dnaX;
@@ -399,8 +555,14 @@ var Game = function () {
           var distance = (dna.strandX - dna.gapX) * (dna.strandX - dna.gapX) + (dna.strandY - dna.gapY) * (dna.strandY - dna.gapY);
           if (distance < 100) {
             dna.pair(dna.dnaCanvas, dna.strandCanvas);
+            that.pairedCount += 1;
             that.container.removeChild(dna.strandCanvas);
             _this.stage.update();
+            // debugger
+
+            if (that.pairedCount === that.count) {
+              that.gameWon = true;
+            }
           }
         });
         dna.dnaCanvas.on("pressmove", function (evt) {
@@ -420,7 +582,7 @@ var Game = function () {
         that.stage.update();
       };
 
-      for (var k = 0; k < count; k++) {
+      for (var k = 0; k < this.count; k++) {
         _loop(k);
       }
     }
