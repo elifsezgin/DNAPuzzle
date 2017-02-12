@@ -94,6 +94,7 @@ var PuzzleView = function () {
     _classCallCheck(this, PuzzleView);
 
     this.game = null;
+    this.resize = this.resize.bind(this);
     this.newGame = this.newGame.bind(this);
     this.hint = this.hint.bind(this);
     this.gameFinished = this.gameFinished.bind(this);
@@ -105,12 +106,28 @@ var PuzzleView = function () {
       return _this.gameFinished();
     });
     this.hint();
+    window.addEventListener('resize', this.resize, false);
   }
 
   _createClass(PuzzleView, [{
+    key: 'resize',
+    value: function resize() {
+      if (this.stage) {
+        this.stage.canvas.width = window.innerWidth;
+        this.stage.canvas.height = window.innerHeight;
+        this.stage.update();
+      }
+    }
+  }, {
     key: 'newGame',
     value: function newGame() {
-      this.game = new _game2.default();
+      this.stage = new createjs.Stage("canvas");
+      this.resize();
+      this.container = new createjs.Container();
+      this.stage.addChild(this.container);
+      this.stage.enableMouseOver(10);
+      this.stage.mouseMoveOutside = true;
+      this.game = new _game2.default(this.stage, this.container);
     }
   }, {
     key: 'hint',
@@ -261,18 +278,12 @@ var Base = function () {
 
     this.type = type;
     this.color = BASE_COLORS[this.type];
-    this.isPair = this.isPair.bind(this);
   }
 
   _createClass(Base, [{
     key: 'drawBase',
     value: function drawBase(graphics, x, y) {
       graphics.beginStroke(this.color).beginFill(this.color).drawCircle(x, y, 5);
-    }
-  }, {
-    key: 'isPair',
-    value: function isPair(otherType) {
-      BASE_PAIRS[this.type] === otherType;
     }
   }]);
 
@@ -490,31 +501,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var BASES = ['A', 'T', 'C', 'G'];
 
 var Game = function () {
-  function Game() {
+  function Game(stage, container) {
     _classCallCheck(this, Game);
 
     this.createDNAs = this.createDNAs.bind(this);
     this.pairedCount = 0;
     this.gameWon = false;
-    this.resize = this.resize.bind(this);
-    this.stage = new createjs.Stage("canvas");
-    this.resize();
-    this.container = new createjs.Container();
-    this.stage.addChild(this.container);
-    this.stage.enableMouseOver(10);
-    this.stage.mouseMoveOutside = true;
-    window.addEventListener('resize', this.resize, false);
+    this.stage = stage;
+    this.container = container;
     this.createDNAs();
   }
 
   _createClass(Game, [{
-    key: 'resize',
-    value: function resize() {
-      this.stage.canvas.width = window.innerWidth;
-      this.stage.canvas.height = window.innerHeight;
-      this.stage.update();
-    }
-  }, {
     key: 'createDNAs',
     value: function createDNAs() {
       var _this = this;

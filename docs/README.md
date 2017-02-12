@@ -4,7 +4,7 @@
 
 DNApuzzle is different than an ordinary puzzle in which the pieces are small one stranded **DNA molecules** that matches sequences on the damaged DNA that needs to be paired.
 
-The game will be structured in an increasing difficulty levels, which will have one DNA molecule to be paired, and as the levels go higher, the molecules and their pairs will increase in number and in length.
+The game will be structured in an increasing difficulty levels, which will have one DNA molecule to be paired, and as the levels go higher, the molecules and their pairs will increase in number and in length. (Bonus)
 
 Technical details of the project are outlined in the **Functionality & MVP** and **Bonus Features** sections.  
 
@@ -12,10 +12,10 @@ Technical details of the project are outlined in the **Functionality & MVP** and
 
 In DNApuzzle game, users will be able to:
 
-- [ ] Start, pause, and reset the game board
-- [ ] Select DNA's and drag them to the corresponding pair
+- [ ] Start, reset the game board
+- [ ] Drag DNA's and strands and match strands to the corresponding DNA
 - [ ] Click hint button that will pop up as a modal
-- [ ] See the timer and their scores according to the duration of their game
+- [ ] See the timer and their scores according to the duration of their game (Bonus)
 
 In addition, this project will include:
 
@@ -36,13 +36,15 @@ This project will be implemented with the following technologies:
 - `EaselJS` with `HTML5 Canvas` for DOM manipulation and rendering,
 - Webpack to bundle and serve up the various scripts.
 
-In addition to the webpack entry file, there will be three scripts involved in this project:
+In addition to the webpack entry file, there will be four scripts involved in this project:
 
-`dna.js`: this script will create and update the necessary Canvas elements to draw a 'DNA' and rendering them to the DOM. Each `DNA` will contain a `sequence` and an `isComplete` (`true` or `false`).
+`dna.js`: this script will create and update the necessary Canvas elements to draw a 'DNA' and rendering them to the DOM. Each `DNA` will contain a `sequence` and the complementary strands of the DNA is structured within this script.
 
-`puzzle.js`: this script will handle the logic behind the scenes.  A puzzle object will hold a `level` and a array of `damaged DNA`s along with an array of 'one stranded DNA's'.  It will be responsible for doing checks for each `match` upon dragging a 'one stranded DNA' to the corresponding `damaged DNA` and updating the 'damaged DNA' object appropriately.
+`base.js`: this lightweight script will house the constructor and update functions for the `base` objects.  Each `base` will contain a `type` and a `color`. This script is responsible for rendering bases of the DNA object.
 
-`strand.js`: this lightweight script will house the constructor and update functions for the `one stranded DNA` objects.  Each `one stranded DNA` will contain a `sequence` and an `isMatched` (`true` or `false`).
+`game.js`: this script will handle the logic behind the scenes.  A puzzle object will create random number of `damaged DNA`s along with their complementary 'one stranded DNA's'.  It will be responsible for doing checks for each `match` upon dragging a 'one stranded DNA' close enough to the corresponding `damaged DNA` and updating the 'damaged DNA' object appropriately.
+
+`puzzle_view.js`: this script will create the modals and the header buttons along with the settings of the canvas that the DNA's will be rendered.
 
 ### Implementation Timeline
 
@@ -71,7 +73,8 @@ In addition to the webpack entry file, there will be three scripts involved in t
 
 ### Bonus features
 
-Some directions that the DancingDNAs may go are:
+Some directions that the DNAPuzzle may go are:
 
 - [ ] Change 2D DNA models to 3D
 - [ ] Add more levels
+- [ ] Add timer
