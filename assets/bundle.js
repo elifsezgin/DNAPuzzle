@@ -118,7 +118,7 @@ var PuzzleView = function () {
       var _this2 = this;
 
       var that = this;
-      var content = '<div class="modal-text">Match DNAs with their strands</div></br><div class="modal-text bigger"><i class="fa fa-circle adenine" aria-hidden="true"></i> = <i class="fa fa-circle timine" aria-hidden="true"></i></div></br><div class="modal-text bigger"><i class="fa fa-circle guanine" aria-hidden="true"></i> = <i class="fa fa-circle cytosine" aria-hidden="true"></i></div></br><div id="base" class="modal-text"><i class="fa fa-circle empty" aria-hidden="true"></div></br>';
+      var content = '<div class="modal-text">Match DNAs with their strands</div></br><div class="modal-text bigger"><i class="fa fa-circle adenine" aria-hidden="true"></i> = <i class="fa fa-circle thymine" aria-hidden="true"></i></div></br><div class="modal-text bigger"><i class="fa fa-circle guanine" aria-hidden="true"></i> = <i class="fa fa-circle cytosine" aria-hidden="true"></i></div></br><div id="base" class="modal-text"><i class="fa fa-circle empty" aria-hidden="true"></div></br>';
       var start = '<div class="modal-text start">Start</div>';
       this.modal = function () {
         var method = {};
@@ -189,9 +189,9 @@ var PuzzleView = function () {
           $base = $content.children('#base');
           $base.text('Cytosine');
         });
-        $modal.on('mouseover', '.timine', function () {
+        $modal.on('mouseover', '.thymine', function () {
           $base = $content.children('#base');
-          $base.text('Timine');
+          $base.text('Thymine');
         });
 
         return method;
