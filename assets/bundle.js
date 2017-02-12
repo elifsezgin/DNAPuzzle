@@ -557,9 +557,8 @@ var Game = function () {
             dna.pair(dna.dnaCanvas, dna.strandCanvas);
             that.pairedCount += 1;
             that.container.removeChild(dna.strandCanvas);
+            dna.strandCanvas.uncache();
             _this.stage.update();
-            // debugger
-
             if (that.pairedCount === that.count) {
               that.gameWon = true;
             }
