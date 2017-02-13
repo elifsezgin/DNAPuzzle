@@ -135,13 +135,15 @@ var PuzzleView = function () {
       var _this2 = this;
 
       var that = this;
-      var content = '<div class="modal-text">Match DNAs with their strands</div></br><div class="modal-text bigger"><i class="fa fa-circle adenine" aria-hidden="true"></i> = <i class="fa fa-circle thymine" aria-hidden="true"></i></div></br><div class="modal-text bigger"><i class="fa fa-circle guanine" aria-hidden="true"></i> = <i class="fa fa-circle cytosine" aria-hidden="true"></i></div></br><div id="base" class="modal-text"><i class="fa fa-circle empty" aria-hidden="true"></div></br>';
+      var content = '<div class="modal-text">Match DNAs with their strands</div></br>';
+      var bases = '<div class="modal-text bigger">Adenine <i class="fa fa-circle adenine" aria-hidden="true"></i> = <i class="fa fa-circle thymine" aria-hidden="true"></i> Thymine</div></br><div class="modal-text bigger">Guanine <i class="fa fa-circle guanine" aria-hidden="true"></i> = <i class="fa fa-circle cytosine" aria-hidden="true"></i> Cytosine</div></br>';
       var start = '<div class="modal-text start">Start</div>';
       this.modal = function () {
         var method = {};
         var $overlay = $('<div id="overlay"></div>');
         var $modal = $('<div id="modal"></div>');
         var $content = $('<div id="content" class="flex"></div>');
+        var $gif = $('<img id="background-gif" src="http://res.cloudinary.com/datsbxfvs/image/upload/v1487015676/dnapuzzle_gif_zapdmc.gif"></img>');
 
         $modal.hide();
         $overlay.hide();
@@ -186,10 +188,12 @@ var PuzzleView = function () {
         $modal.on('click', '.start', function (e) {
           e.preventDefault();
           method.close();
+          $overlay.hide();
           that.newGame();
         });
         $(document).ready(function () {
           _this2.modal.open({ content: content + start });
+          $overlay.append($gif);
           $('body').append($overlay, $modal);
         });
         var $base = void 0;
@@ -216,7 +220,9 @@ var PuzzleView = function () {
 
       var $hint = $("#question-circle");
       $hint.on('click', function () {
-        _this2.modal.open({ content: content });
+        var $overlay = $('#overlay');
+        $overlay.empty();
+        _this2.modal.open({ content: content + bases });
       });
     }
   }, {
@@ -227,8 +233,9 @@ var PuzzleView = function () {
       var that = this;
       if (this.game && this.game.gameWon) {
         var content = '<div class="modal-text">You won! Total DNA\'s matched: ' + this.game.count + '</div>';
-        this.modal.open({ content: content });
         var $overlay = $('#overlay');
+        $overlay.empty();
+        this.modal.open({ content: content });
         $overlay.click(function (e) {
           e.preventDefault();
           that.modal.close();
