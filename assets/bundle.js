@@ -122,6 +122,7 @@ var PuzzleView = function () {
     key: 'newGame',
     value: function newGame() {
       this.stage = new createjs.Stage("canvas");
+      createjs.Touch.enable(this.stage);
       this.resize();
       this.container = new createjs.Container();
       this.stage.addChild(this.container);
@@ -552,22 +553,15 @@ var Game = function () {
           dna.strandCanvas.localX = evt.localX;
           dna.strandCanvas.localY = evt.localY;
         });
-        dna.dnaCanvas.addEventListener('touchmove', function (event) {
-          var touch = event.targetTouches[0];
+        // dna.dnaCanvas.addEventListener("touchstart", (evt) => {
+        //   dna.dnaCanvas.localX = evt.localX;
+        //   dna.dnaCanvas.localY = evt.localY;
+        // });
+        // dna.strandCanvas.addEventListener("touchstart", (evt) => {
+        //   dna.strandCanvas.localX = evt.localX;
+        //   dna.strandCanvas.localY = evt.localY;
+        // });
 
-          // Place element where the finger is
-          dna.dnaCanvas.style.left = touch.pageX - 25 + 'px';
-          dna.dnaCanvas.style.top = touch.pageY - 25 + 'px';
-          event.preventDefault();
-        }, false);
-        dna.strandCanvas.addEventListener('touchmove', function (event) {
-          var touch = event.targetTouches[0];
-
-          // Place element where the finger is
-          dna.strandCanvas.style.left = touch.pageX - 25 + 'px';
-          dna.strandCanvas.style.top = touch.pageY - 25 + 'px';
-          event.preventDefault();
-        }, false);
         dna.strandCanvas.addEventListener("pressup", function (evt) {
           dna.strandCanvas.localX = evt.localX;
           dna.strandCanvas.localY = evt.localY;
