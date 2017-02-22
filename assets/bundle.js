@@ -122,7 +122,6 @@ var PuzzleView = function () {
     key: 'newGame',
     value: function newGame() {
       this.stage = new createjs.Stage("canvas");
-      createjs.Touch.enable(this.stage);
       this.resize();
       this.container = new createjs.Container();
       this.stage.addChild(this.container);
@@ -553,14 +552,6 @@ var Game = function () {
           dna.strandCanvas.localX = evt.localX;
           dna.strandCanvas.localY = evt.localY;
         });
-        // dna.dnaCanvas.addEventListener("touchstart", (evt) => {
-        //   dna.dnaCanvas.localX = evt.localX;
-        //   dna.dnaCanvas.localY = evt.localY;
-        // });
-        // dna.strandCanvas.addEventListener("touchstart", (evt) => {
-        //   dna.strandCanvas.localX = evt.localX;
-        //   dna.strandCanvas.localY = evt.localY;
-        // });
 
         dna.strandCanvas.addEventListener("pressup", function (evt) {
           dna.strandCanvas.localX = evt.localX;
